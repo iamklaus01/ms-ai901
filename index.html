@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen blanc : AI-901</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== ÉCRAN D'ACCUEIL ===================== -->
+<section id="screen-start" class="screen">
+  <div class="start-card">
+    <p class="eyebrow">Simulateur d'examen</p>
+    <h1>AI-901 : Microsoft Azure AI Fundamentals</h1>
+    <p class="lede"></p>
+    <p class="exam-meta" id="exam-meta"></p>
+
+    <button id="btn-start" class="btn btn-primary btn-large">Commencer l'examen</button>
+    <p class="fine-print">Le chronomètre démarre dès le lancement. Fermer l'onglet interrompt la session.</p>
+  </div>
+</section>
+
+<!-- ===================== ÉCRAN EXAMEN ===================== -->
+<section id="screen-exam" class="screen hidden">
+  <header class="exam-topbar">
+    <div class="topbar-left">
+      <span class="exam-title">AI-901</span>
+      <span class="question-counter" id="question-counter">Question 1 sur 56</span>
+    </div>
+    <div class="topbar-right">
+      <button id="btn-flag" class="flag-toggle" title="Marquer pour révision">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 3v18M5 4h13l-3 4 3 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span>Marquer</span>
+      </button>
+      <div id="timer" class="timer">45:00</div>
+    </div>
+  </header>
+
+  <main class="exam-main">
+    <div class="question-card">
+      <p class="question-domain" id="question-domain">Concepts IA</p>
+      <pre class="code-block hidden" id="question-code"></pre>
+      <h2 class="question-text" id="question-text"></h2>
+      <div class="options" id="options-container"></div>
+    </div>
+  </main>
+
+  <footer class="exam-bottombar">
+    <button id="btn-prev" class="btn btn-ghost">Précédent</button>
+    <button id="btn-review-grid" class="btn btn-ghost">Vue d'ensemble</button>
+    <button id="btn-next" class="btn btn-primary">Suivant</button>
+  </footer>
+</section>
+
+<!-- ===================== ÉCRAN RÉCAPITULATIF ===================== -->
+<section id="screen-review" class="screen hidden">
+  <div class="review-wrap">
+    <p class="eyebrow">Avant de valider</p>
+    <h1>Vue d'ensemble</h1>
+    <p class="lede">Cliquer sur un numéro pour revenir à la question. Vérifier qu'aucune question importante ne reste sans réponse.</p>
+
+    <div class="legend">
+      <span class="legend-item"><i class="dot dot-answered"></i> Répondue</span>
+      <span class="legend-item"><i class="dot dot-flagged"></i> Marquée</span>
+      <span class="legend-item"><i class="dot dot-empty"></i> Sans réponse</span>
+    </div>
+
+    <div id="review-grid" class="review-grid"></div>
+
+    <div class="review-summary" id="review-summary"></div>
+
+    <div class="review-actions">
+      <button id="btn-back-to-exam" class="btn btn-ghost">Retour à l'examen</button>
+      <button id="btn-submit" class="btn btn-danger btn-large">Valider et terminer l'examen</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ÉCRAN RÉSULTATS ===================== -->
+<section id="screen-results" class="screen hidden">
+  <div class="results-wrap">
+    <div class="score-block">
+      <p class="eyebrow">Résultat</p>
+      <div class="score-number" id="score-number">000</div>
+      <div class="score-scale">/ 1000</div>
+      <div id="pass-banner" class="pass-banner"></div>
+    </div>
+
+    <div class="domain-breakdown" id="domain-breakdown"></div>
+
+    <div class="results-actions">
+      <button id="btn-show-review" class="btn btn-ghost">Revoir mes réponses</button>
+      <button id="btn-restart" class="btn btn-primary">Recommencer un examen</button>
+    </div>
+
+    <div id="answers-review" class="answers-review hidden"></div>
+  </div>
+</section>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
