@@ -602,6 +602,181 @@ const QUESTIONS = [
     text: "Qu'affiche ce programme ?",
     options: ["2", "3", "1", "0"], correct: 0,
     explanation: "Deux invités sur trois ont répondu oui, Awa et Coumba. compte vaut donc 2 à la fin de la boucle." },
-];
 
-// Pour ajouter les questions Foundry plus tard : même structure, domain: "foundry"
+  // ==========================================================================
+  // FOUNDRY, domaine 2 d'AI-901 : mise en œuvre de solutions IA avec Foundry
+  // Questions conceptuelles, façon examen : à quoi sert telle capacité, quel
+  // scénario correspond à quel outil. Pas de questions de manipulation
+  // d'interface. Vérifiées contre la documentation officielle avant rédaction.
+  // ==========================================================================
+
+  // ---------- Agents et applications génératives ----------
+  { id: "fa1", domain: "foundry", type: "single", topic: "Agents",
+    text: "Une équipe veut créer un agent directement depuis le portail Foundry, sans écrire ni maintenir de code, ni gérer d'infrastructure. Quel type d'agent correspond à ce besoin ?",
+    options: ["Un agent prompt (prompt agent)", "Un agent hébergé (hosted agent)", "Un modèle de base non déployé", "Un outil de recherche web"],
+    correct: 0,
+    explanation: "Un agent prompt se configure dans le portail ou via le SDK, sans code applicatif à maintenir : Foundry l'exécute pour le compte de l'équipe." },
+
+  { id: "fa2", domain: "foundry", type: "single", topic: "Agents",
+    text: "Une équipe a déjà écrit son propre agent en code, avec un framework comme LangGraph, et veut le déployer sur Foundry avec une mise à l'échelle automatique et une identité managée, sans changer son code. Quel type d'agent Foundry correspond à ce cas ?",
+    options: ["Un agent hébergé (hosted agent)", "Un agent prompt", "Un modèle de base", "Une fonction Azure classique"],
+    correct: 0,
+    explanation: "Un agent hébergé permet d'apporter son propre code (Agent Framework, LangGraph, ou un autre) et de le faire tourner sur Foundry avec mise à l'échelle, identité et observabilité intégrées." },
+
+  { id: "fa3", domain: "foundry", type: "single", topic: "Agents",
+    text: "Dans la configuration d'un agent Foundry, quelle section sert à connecter l'agent à des documents ou des sources de données, pour ancrer ses réponses dans un contenu précis ?",
+    options: ["Knowledge", "Instructions", "Guardrails", "Memory"],
+    correct: 0,
+    explanation: "La section Knowledge relie l'agent à des sources de données ou des documents, pour que ses réponses s'appuient sur ce contenu plutôt que sur sa seule connaissance générale." },
+
+  { id: "fa4", domain: "foundry", type: "single", topic: "Agents",
+    text: "À quoi servent principalement les guardrails configurés sur un agent Foundry ?",
+    options: ["Se protéger contre les tentatives de contournement (jailbreaks) et les injections de prompt indirectes",
+      "Accélérer le temps de réponse du modèle", "Réduire le coût de chaque appel", "Traduire automatiquement les réponses"],
+    correct: 0,
+    explanation: "Les guardrails protègent contre les jailbreaks, les injections de prompt indirectes et les sorties non sûres : une couche de sécurité intégrée à l'agent." },
+
+  { id: "fa5", domain: "foundry", type: "multi", topic: "Agents",
+    text: "Parmi les métriques d'évaluation rapide proposées pour un agent Foundry, choisir les deux qui relèvent de la sécurité plutôt que de la qualité de la réponse.",
+    options: ["Coherence", "Self harm", "Fluency", "Hate and unfairness"],
+    correct: [1, 3],
+    explanation: "Self harm et Hate and unfairness sont des métriques de sécurité. Coherence et Fluency évaluent la qualité linguistique de la réponse, pas sa sécurité." },
+
+  { id: "fa6", domain: "foundry", type: "single", topic: "Agents",
+    text: "Une équipe veut comprendre, étape par étape, pourquoi un agent a appelé tel outil et produit telle réponse, pour déboguer un comportement inattendu en production. Quelle fonctionnalité de Foundry répond à ce besoin ?",
+    options: ["Le traçage (tracing)", "Le catalogue de modèles", "La matrice RACI", "Le Model Router"],
+    correct: 0,
+    explanation: "Le traçage affiche l'enchaînement des actions d'un agent (appel de modèle, appel d'outil, entrée utilisateur, sortie), utile pour déboguer un comportement précis." },
+
+  { id: "fa7", domain: "foundry", type: "single", topic: "Agents",
+    text: "En Python, quel package constitue le point d'entrée principal du SDK Foundry pour accéder aux ressources d'un projet (modèles, agents, déploiements) ?",
+    options: ["azure-ai-projects", "azure-ai-foundry-core", "foundry-sdk-python", "azure-cognitiveservices"],
+    correct: 0,
+    explanation: "azure-ai-projects est le SDK Foundry côté client léger qui donne accès aux ressources du projet : agents, modèles déployés, connexions." },
+
+  { id: "fa8", domain: "foundry", type: "tf", topic: "Agents",
+    text: "Foundry permet de construire visuellement, dans le portail, des workflows impliquant plusieurs agents qui collaborent.",
+    correct: true,
+    explanation: "Les workflows multi-agents se construisent visuellement dans le portail, une fonctionnalité distincte du flux mono-agent de Foundry classique." },
+
+  { id: "fa9", domain: "foundry", type: "single", topic: "Agents",
+    text: "Une entreprise veut que plusieurs agents différents s'appuient sur une même base de connaissances, unifiée à partir de ses données internes et de sources externes. Quelle capacité Foundry répond à ce besoin ?",
+    options: ["Foundry IQ", "Le Model Router", "Les guardrails", "Le playground vidéo"],
+    correct: 0,
+    explanation: "Foundry IQ unifie des données d'entreprise et externes dans une couche de connaissance partagée, exploitable par plusieurs agents." },
+
+  // ---------- Texte et voix ----------
+  { id: "fb1", domain: "foundry", type: "single", topic: "Texte et voix",
+    text: "Comment s'appellent, dans Microsoft Foundry, les solutions prêtes à l'emploi (reconnaissance vocale, analyse de texte, vision) accessibles via des SDK dédiés, connues auparavant sous le nom d'Azure AI Services ?",
+    options: ["Les Foundry Tools", "Les Foundry Models", "Le Model Router", "Les Foundry Playgrounds"],
+    correct: 0,
+    explanation: "Foundry Tools est le nouveau nom d'Azure AI Services : des solutions prêtes à l'emploi (vision, sécurité de contenu, langage, traduction, parole) avec leurs propres SDK." },
+
+  { id: "fb2", domain: "foundry", type: "single", topic: "Texte et voix",
+    text: "Une entreprise veut intégrer l'analyse de sentiment de ses avis clients à son application, sans entraîner son propre modèle. Quelle famille de solution Foundry est la plus directement adaptée ?",
+    options: ["Un Foundry Tool de langage (Azure AI Language)", "Un agent hébergé codé en LangGraph", "Le Model Router", "Un modèle de génération d'image"],
+    correct: 0,
+    explanation: "L'analyse de sentiment fait partie des capacités prêtes à l'emploi d'Azure AI Language, l'un des Foundry Tools, sans besoin d'entraîner un modèle." },
+
+  { id: "fb3", domain: "foundry", type: "single", topic: "Texte et voix",
+    text: "Dans la configuration d'un agent Foundry, à quoi sert le bouton « Voice mode » ?",
+    options: ["À basculer l'agent vers une expérience où l'échange se fait principalement à la voix",
+      "À changer la langue de l'interface du portail", "À activer la reconnaissance faciale", "À accélérer la vitesse de réponse du modèle"],
+    correct: 0,
+    explanation: "Voice mode bascule l'agent vers une expérience voix-d'abord, où l'échange se fait principalement à l'oral plutôt qu'à l'écrit." },
+
+  { id: "fb4", domain: "foundry", type: "tf", topic: "Texte et voix",
+    text: "Dans Foundry, la reconnaissance vocale et la synthèse vocale sont fournies par le même Foundry Tool, Azure AI Speech.",
+    correct: true,
+    explanation: "Azure AI Speech regroupe la reconnaissance vocale et la synthèse vocale au sein des Foundry Tools." },
+
+  { id: "fb5", domain: "foundry", type: "single", topic: "Texte et voix",
+    text: "Pour appeler un Foundry Tool comme Azure AI Language ou Azure AI Speech directement depuis du code, quel type d'endpoint utilise-t-on ?",
+    options: ["L'endpoint Foundry Tools (cognitiveservices.azure.com)", "L'endpoint du playground", "L'endpoint Azure Marketplace", "L'endpoint de facturation"],
+    correct: 0,
+    explanation: "Les Foundry Tools s'appellent via un endpoint dédié au format cognitiveservices.azure.com, distinct de l'endpoint du projet." },
+
+  { id: "fb6", domain: "foundry", type: "single", topic: "Texte et voix",
+    text: "Depuis le playground d'un modèle Foundry, à quoi sert le bouton « Open in VS Code for the Web » ?",
+    options: ["À importer automatiquement l'endpoint, la clé et un exemple de code dans un environnement VS Code prêt à l'emploi",
+      "À déployer directement le modèle en production", "À supprimer le déploiement en cours", "À changer de langue d'interface"],
+    correct: 0,
+    explanation: "Ce bouton importe automatiquement l'endpoint, la clé et un exemple de code multilingue dans un espace de travail VS Code pour le web." },
+
+  // ---------- Vision et image ----------
+  { id: "fc1", domain: "foundry", type: "single", topic: "Vision et image",
+    text: "Quel playground Foundry s'ouvre automatiquement lorsqu'on teste un modèle comme gpt-image-1 ou une famille FLUX ?",
+    options: ["Le playground Images", "Le playground Agents", "Le playground vidéo", "Le playground Modèle standard"],
+    correct: 0,
+    explanation: "Foundry présente automatiquement le playground adapté à la modalité du modèle : le playground Images pour un modèle de génération d'image." },
+
+  { id: "fc2", domain: "foundry", type: "single", topic: "Vision et image",
+    text: "Dans le playground Images de Foundry, à quoi sert l'inpainting ?",
+    options: ["À transformer une partie précise d'une image existante à partir d'une instruction textuelle",
+      "À comparer trois modèles d'image côte à côte", "À convertir une image en texte", "À générer une vidéo à partir d'une image"],
+    correct: 0,
+    explanation: "L'inpainting permet de modifier une zone ciblée d'une image déjà existante, en la décrivant avec un prompt texte." },
+
+  { id: "fc3", domain: "foundry", type: "single", topic: "Vision et image",
+    text: "Quel modèle est associé au playground vidéo (en préversion) de Foundry ?",
+    options: ["Azure OpenAI Sora-2", "gpt-image-1", "Claude Opus", "Whisper"],
+    correct: 0,
+    explanation: "Le playground vidéo fonctionne avec Sora-2 d'Azure OpenAI, encore en préversion." },
+
+  { id: "fc4", domain: "foundry", type: "tf", topic: "Vision et image",
+    text: "Les vidéos générées dans le playground vidéo de Foundry sont conservées indéfiniment sur le compte de l'utilisateur.",
+    correct: false,
+    explanation: "Elles sont conservées 24 heures seulement, pour des raisons de confidentialité des données ; il faut les télécharger pour les garder plus longtemps." },
+
+  { id: "fc5", domain: "foundry", type: "single", topic: "Vision et image",
+    text: "Un designer veut comparer, sur le même prompt, la qualité de plusieurs modèles de génération d'image avant de choisir lequel utiliser en production. Quelle fonctionnalité du playground Foundry répond à ce besoin ?",
+    options: ["Le mode comparaison (compare models)", "Le mode inpainting", "Le Model Router", "Les guardrails"],
+    correct: 0,
+    explanation: "Le mode comparaison permet d'exécuter plusieurs modèles en parallèle sur le même prompt, pour comparer leurs réponses." },
+
+  { id: "fc6", domain: "foundry", type: "single", topic: "Vision et image",
+    text: "Le playground vidéo de Foundry filtre automatiquement les images jugées dangereuses ou inappropriées avant qu'elles ne s'affichent, grâce à quelle capacité intégrée ?",
+    options: ["Azure AI Content Safety", "Le Model Router", "Content Understanding", "Les Foundry Tools de traduction"],
+    correct: 0,
+    explanation: "Tous les endpoints de modèle sont intégrés à Azure AI Content Safety, qui filtre les contenus dangereux avant affichage." },
+
+  { id: "fc7", domain: "foundry", type: "multi", topic: "Vision et image",
+    text: "Choisir les deux familles de modèles associées au playground Images de Foundry.",
+    options: ["gpt-image", "FLUX", "Sora", "Whisper"],
+    correct: [0, 1],
+    explanation: "gpt-image (Azure OpenAI) et FLUX (Black Forest Labs) sont les familles associées au playground Images. Sora est vidéo, Whisper est un modèle vocal." },
+
+  // ---------- Extraction d'information ----------
+  { id: "fd1", domain: "foundry", type: "single", topic: "Extraction d'information",
+    text: "Quelle affirmation décrit le mieux Azure Content Understanding, l'un des Foundry Tools ?",
+    options: ["Une capacité qui extrait des informations structurées à partir de documents, d'images, d'audio et de vidéo, grâce à l'IA générative",
+      "Un outil réservé exclusivement aux fichiers PDF", "Un service qui traduit des documents dans une autre langue", "Un outil de génération d'images à partir de texte"],
+    correct: 0,
+    explanation: "Content Understanding couvre plusieurs modalités : documents, images, audio et vidéo, avec des modèles génératifs pour l'extraction." },
+
+  { id: "fd2", domain: "foundry", type: "single", topic: "Extraction d'information",
+    text: "Une entreprise reçoit des factures de fournisseurs très variés, avec des mises en page qui changent souvent, et veut en extraire automatiquement le montant et la date sans entraîner de modèle sur mesure. Quelle approche est la plus adaptée pour démarrer rapidement ?",
+    options: ["Utiliser un analyseur prédéfini de Content Understanding (par exemple, un analyseur facture)",
+      "Écrire un script de reconnaissance de motifs de texte", "Former un modèle de classification d'image", "Utiliser uniquement la synthèse vocale"],
+    correct: 0,
+    explanation: "Les analyseurs prédéfinis de Content Understanding (comme celui pour les factures) couvrent les cas courants sans étiquetage préalable, adaptés aux mises en page variées." },
+
+  { id: "fd3", domain: "foundry", type: "tf", topic: "Extraction d'information",
+    text: "Content Understanding peut extraire de l'information à partir d'un enregistrement audio ou d'une vidéo, pas seulement à partir de documents.",
+    correct: true,
+    explanation: "Content Understanding est multimodal : documents, images, audio et vidéo font partie de son périmètre." },
+
+  { id: "fd4", domain: "foundry", type: "single", topic: "Extraction d'information",
+    text: "Comment Azure Document Intelligence se positionne-t-il aujourd'hui par rapport à Azure Content Understanding ?",
+    options: ["Document Intelligence est désormais présenté comme une capacité intégrée à Content Understanding, spécialisée dans les documents structurés",
+      "Document Intelligence a complètement disparu, remplacé sans transition", "Ce sont deux produits totalement indépendants, sans aucun lien",
+      "Content Understanding est une ancienne version de Document Intelligence"],
+    correct: 0,
+    explanation: "Document Intelligence est désormais intégré à Content Understanding comme capacité spécialisée pour les documents à structure prévisible, aux côtés des analyseurs génératifs plus larges de Content Understanding." },
+
+  { id: "fd5", domain: "foundry", type: "single", topic: "Extraction d'information",
+    text: "Une équipe juridique veut faire analyser des heures d'enregistrements de dépositions vidéo, pour en obtenir automatiquement une transcription structurée. Quel Foundry Tool correspond le mieux à ce besoin ?",
+    options: ["Content Understanding", "Le Model Router", "Un agent prompt sans outil", "Le playground Images"],
+    correct: 0,
+    explanation: "Extraire une transcription structurée à partir d'une vidéo relève des capacités multimodales de Content Understanding." },
+];

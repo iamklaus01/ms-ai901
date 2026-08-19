@@ -3,7 +3,7 @@
 // choisit pas : elles sont fixes pendant toute la session.
 const CONFIG = {
   // Domaines inclus dans cet examen. Valeurs possibles : "concepts", "python", "foundry".
-  DOMAINS: ["concepts", "python"],
+  DOMAINS: ["concepts", "python", "foundry"],
   // Nombre de questions tirées au sort parmi les domaines choisis ci-dessus.
   // Mettre "all" pour inclure toutes les questions disponibles dans ces domaines.
   QUESTION_COUNT: 60,
