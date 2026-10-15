@@ -216,6 +216,17 @@ button {
 
 .multi-hint { font-size: 0.82rem; color: var(--muted); margin: -0.75rem 0 1rem; }
 
+/* ---------- Série d'affirmations vrai / faux ---------- */
+.series-row {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem 0.95rem;
+}
+.series-statement { margin: 0 0 0.6rem; line-height: 1.45; font-size: 0.98rem; }
+.series-choices { display: flex; gap: 0.6rem; }
+.series-choices .option { flex: 1; padding: 0.5rem 0.9rem; }
+.series-recap { margin: 0 0 0.6rem; padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.45; }
+
 /* ---------- Barre inférieure ---------- */
 .exam-bottombar {
   position: fixed;

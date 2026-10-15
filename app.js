@@ -4,6 +4,10 @@
 const CONFIG = {
   // Domaines inclus dans cet examen. Valeurs possibles : "concepts", "python", "foundry".
   DOMAINS: ["concepts", "python", "foundry"],
+  // Poids de chaque domaine dans le tirage (proportions relatives, la somme n'a pas
+  // besoin de faire 1). Avec 60 questions : 24 concepts, 24 Foundry, 12 Python.
+  // Si un domaine n'a pas assez de questions, le reste est réparti sur les autres.
+  DOMAIN_WEIGHTS: { concepts: 0.40, foundry: 0.40, python: 0.20 },
   // Nombre de questions tirées au sort parmi les domaines choisis ci-dessus.
   // Mettre "all" pour inclure toutes les questions disponibles dans ces domaines.
   QUESTION_COUNT: 60,
@@ -40,10 +44,54 @@ function showScreen(name) {
 }
 
 function buildPool() {
-  const source = QUESTIONS.filter(q => CONFIG.DOMAINS.includes(q.domain));
-  const shuffled = shuffle(source);
-  if (CONFIG.QUESTION_COUNT === "all") return shuffled;
-  return shuffled.slice(0, CONFIG.QUESTION_COUNT);
+  const domains = CONFIG.DOMAINS;
+  const byDomain = {};
+  domains.forEach(d => { byDomain[d] = shuffle(QUESTIONS.filter(q => q.domain === d)); });
+  const available = domains.reduce((n, d) => n + byDomain[d].length, 0);
+
+  if (CONFIG.QUESTION_COUNT === "all") {
+    return shuffle(domains.reduce((all, d) => all.concat(byDomain[d]), [])).map(withShuffledOptions);
+  }
+
+  const total = Math.min(CONFIG.QUESTION_COUNT, available);
+  const weights = {};
+  let weightSum = 0;
+  domains.forEach(d => {
+    weights[d] = (CONFIG.DOMAIN_WEIGHTS && CONFIG.DOMAIN_WEIGHTS[d]) || 0;
+    weightSum += weights[d];
+  });
+  if (weightSum === 0) { domains.forEach(d => { weights[d] = 1; }); weightSum = domains.length; }
+
+  // Répartition : partie entière du quota, puis les places restantes vont aux
+  // domaines dont le quota est le moins bien servi, sans dépasser leur stock.
+  const quota = {}, alloc = {};
+  let left = total;
+  domains.forEach(d => {
+    quota[d] = total * weights[d] / weightSum;
+    alloc[d] = Math.min(Math.floor(quota[d]), byDomain[d].length);
+    left -= alloc[d];
+  });
+  while (left > 0) {
+    const open = domains.filter(d => alloc[d] < byDomain[d].length);
+    if (open.length === 0) break;
+    open.sort((a, b) => (quota[b] - alloc[b]) - (quota[a] - alloc[a]));
+    alloc[open[0]]++;
+    left--;
+  }
+
+  const picked = domains.reduce((all, d) => all.concat(byDomain[d].slice(0, alloc[d])), []);
+  return shuffle(picked).map(withShuffledOptions);
+}
+
+// Mélange l'ordre des propositions à chaque examen, pour que la position de la bonne
+// réponse ne soit jamais un indice. Retourne une copie : la banque d'origine n'est pas modifiée.
+function withShuffledOptions(q) {
+  if (!q.options || q.type === "tf" || q.type === "series") return q;
+  const order = shuffle(q.options.map((_, i) => i));
+  const options = order.map(i => q.options[i]);
+  const remap = old => order.indexOf(old);
+  const correct = Array.isArray(q.correct) ? q.correct.map(remap).sort((a, b) => a - b) : remap(q.correct);
+  return Object.assign({}, q, { options, correct });
 }
 
 function shuffle(arr) {
@@ -123,7 +171,29 @@ function renderQuestion() {
   const container = document.getElementById("options-container");
   container.innerHTML = "";
 
-  if (q.type === "tf") {
+  if (q.type === "series") {
+    q.statements.forEach((st, si) => {
+      const row = document.createElement("div");
+      row.className = "series-row";
+      const p = document.createElement("p");
+      p.className = "series-statement";
+      p.textContent = st.text;
+      const choices = document.createElement("div");
+      choices.className = "series-choices";
+      [true, false].forEach(val => {
+        const cur = state.answers[q.id] || [];
+        choices.appendChild(buildOption(val ? "Vrai" : "Faux", null, cur[si] === val, () => {
+          const a = (state.answers[q.id] || new Array(q.statements.length).fill(undefined)).slice();
+          a[si] = val;
+          state.answers[q.id] = a;
+          renderQuestion();
+        }));
+      });
+      row.appendChild(p);
+      row.appendChild(choices);
+      container.appendChild(row);
+    });
+  } else if (q.type === "tf") {
     ["Vrai", "Faux"].forEach((label, i) => {
       const val = i === 0;
       const div = buildOption(label, null, state.answers[q.id] === val, () => {
@@ -250,6 +320,9 @@ function showReviewScreen() {
 function isQuestionAnswered(q) {
   const a = state.answers[q.id];
   if (q.type === "multi") return Array.isArray(a) && a.length > 0;
+  if (q.type === "series") {
+    return Array.isArray(a) && q.statements.every((_, i) => a[i] !== undefined);
+  }
   return a !== undefined;
 }
 
@@ -274,6 +347,9 @@ function submitExam() {
 function isCorrect(q) {
   const a = state.answers[q.id];
   if (a === undefined) return false;
+  if (q.type === "series") {
+    return Array.isArray(a) && q.statements.every((st, i) => a[i] === st.correct);
+  }
   if (q.type === "multi") {
     if (!Array.isArray(a) || a.length !== q.correct.length) return false;
     const sortedA = [...a].sort();
@@ -334,7 +410,15 @@ function buildAnswersReview() {
     let yourAnswerText = "Sans réponse";
     let correctAnswerText = "";
 
-    if (q.type === "tf") {
+    let seriesHtml = "";
+    if (q.type === "series") {
+      const a = state.answers[q.id] || [];
+      const lab = v => (v === undefined ? "sans réponse" : (v ? "Vrai" : "Faux"));
+      yourAnswerText = q.statements.map((st, k) => `(${k + 1}) ${lab(a[k])}`).join(" ; ");
+      correctAnswerText = q.statements.map((st, k) => `(${k + 1}) ${lab(st.correct)}`).join(" ; ");
+      seriesHtml = "<ol class=\"series-recap\">" +
+        q.statements.map(st => `<li>${escapeHtml(st.text)}</li>`).join("") + "</ol>";
+    } else if (q.type === "tf") {
       const a = state.answers[q.id];
       yourAnswerText = a === undefined ? "Sans réponse" : (a ? "Vrai" : "Faux");
       correctAnswerText = q.correct ? "Vrai" : "Faux";
@@ -354,6 +438,7 @@ function buildAnswersReview() {
     card.innerHTML = `
       <p class="answer-q">${i + 1}. ${q.text}</p>
       ${codeHtml}
+      ${seriesHtml}
       <p class="answer-line ${ok ? "" : "your-wrong"}">Réponse donnée : ${yourAnswerText}</p>
       ${ok ? "" : `<p class="answer-line correct-answer">Bonne réponse : ${correctAnswerText}</p>`}
       <p class="answer-explain">${q.explanation}</p>`;
